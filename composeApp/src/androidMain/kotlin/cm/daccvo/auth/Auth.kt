@@ -3,6 +3,7 @@ package cm.daccvo.auth
 import android.R.attr.statusBarColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
@@ -24,16 +25,16 @@ import cm.daccvo.auth.ui.register.Register
 fun AuthApp(userSettings: UserSettingsDataStore){
 
     //var startScreen by remember { mutableStateOf<Screen>(Register) }
-    val authState by userSettings.authState.collectAsState()
+//    val authState by userSettings.authState.collectAsState()
+//
+//    val startScreen = remember(authState) {
+//        when (authState) {
+//            AuthState.Checking -> Splash(userSettings)
+//            AuthState.Unauthenticated -> Register
+//            is AuthState.Authenticated -> Dashboard
+//        }
+//    }
 
-    val startScreen = remember(authState) {
-        when (authState) {
-            AuthState.Checking -> Splash(userSettings)
-            AuthState.Unauthenticated -> Register
-            is AuthState.Authenticated -> Dashboard
-        }
-    }
-
-    Navigator(screen = startScreen)
+    Navigator(Splash(userSettings))
 
 }

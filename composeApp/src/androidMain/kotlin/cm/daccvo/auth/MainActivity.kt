@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.tooling.preview.Preview
 import cm.daccvo.auth.di.initKoin
 import cm.daccvo.auth.security.SecureStorage
@@ -31,7 +32,7 @@ class MainActivity : ComponentActivity() {
             secureStorage = secureStorage
         )
 
-        userSettings.onAppStart() // 🔥 important
+        //userSettings.onAppStart() // 🔥 important
         setContent {
 
             App(userSettings)

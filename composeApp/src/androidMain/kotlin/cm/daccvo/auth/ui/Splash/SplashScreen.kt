@@ -30,7 +30,6 @@ import cm.daccvo.auth.security.UserSettingsDataStore
 @Composable
 fun SplashScreen(
     onSplashFinished: () -> Unit = {},
-    userSettings: UserSettingsDataStore
 ) {
     var startAnimation by remember { mutableStateOf(false) }
 
@@ -39,8 +38,7 @@ fun SplashScreen(
         startAnimation = true
         // Durée du splash screen (3 secondes)
         delay(3000)
-        userSettings.onAppStart()
-        //onSplashFinished()
+        onSplashFinished()
     }
 
     Box(
