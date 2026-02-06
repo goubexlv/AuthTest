@@ -1,5 +1,6 @@
 package cm.daccvo.auth.ui.login
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -28,6 +30,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cm.daccvo.auth.uiState.AccountUiState
+import kotlinx.coroutines.delay
 
 // Couleurs du thème
 object AppColors {
@@ -40,6 +44,7 @@ object AppColors {
     val TextSecondary = Color(0xFF92ADC9)
     val White = Color(0xFFFFFFFF)
     val WhiteAlpha50 = Color(0x80FFFFFF)
+    val WhiteAlpha80 = Color(0xCCFFFFFF)
     val Divider = Color(0xFF324D67)
     val InputHover = Color(0xFF233446)
 
@@ -55,7 +60,15 @@ object AppColors {
 
 
 @Composable
-fun LoginScreenEmail() {
+fun LoginScreenEmail(
+    uiState: AccountUiState,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onPhoneLoginClick: () -> Unit = {},
+    onLoginClick: () -> Unit ,
+    onNavigateToDashboard: () -> Unit,
+    onRegisterClick: () -> Unit = {}
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -131,8 +144,8 @@ fun LoginScreenEmail() {
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
                     OutlinedTextField(
-                        value = email,
-                        onValueChange = { email = it },
+                        value = uiState.email,
+                        onValueChange = onEmailChange,
                         placeholder = {
                             Text(
                                 text = "Entrez votre email",
@@ -171,11 +184,11 @@ fun LoginScreenEmail() {
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
                     OutlinedTextField(
-                        value = password,
-                        onValueChange = { password = it },
+                        value = uiState.password,
+                        onValueChange = onPasswordChange,
                         placeholder = {
                             Text(
-                                text = "Entrez votre email",
+                                text = "Entrez votre mot de passe",
                                 color = AppColors.TextSecondary
                             )
                         },
@@ -217,7 +230,7 @@ fun LoginScreenEmail() {
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                         .padding(vertical = 8.dp)
-                        .clickable { /* Handle forgot password */ },
+                        .clickable { onLoginClick() },
                     textAlign = TextAlign.End
                 )
             }
@@ -254,7 +267,7 @@ fun LoginScreenEmail() {
             // Reset pressed state
             LaunchedEffect(isLoginPressed) {
                 if (isLoginPressed) {
-                    kotlinx.coroutines.delay(100)
+                    delay(100)
                     isLoginPressed = false
                 }
             }
@@ -264,7 +277,7 @@ fun LoginScreenEmail() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp)
-                    .clickable { /* Handle phone login */ }
+                    .clickable { onPhoneLoginClick() }
                     .padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
@@ -284,106 +297,6 @@ fun LoginScreenEmail() {
                 )
             }
 
-            // Divider with text
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 24.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Divider(
-                    modifier = Modifier.weight(1f),
-                    color = AppColors.Divider,
-                    thickness = 1.dp
-                )
-                Text(
-                    text = "Ou continuez avec",
-                    color = AppColors.TextSecondary,
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-                Divider(
-                    modifier = Modifier.weight(1f),
-                    color = AppColors.Divider,
-                    thickness = 1.dp
-                )
-            }
-
-            // Social Login Buttons
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 32.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Google Button
-                OutlinedButton(
-                    onClick = { /* Handle Google login */ },
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = AppColors.InputBackground,
-                        contentColor = AppColors.White
-                    ),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, AppColors.InputBorder),
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(48.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.AccountCircle,
-                            contentDescription = "Google",
-                            tint = AppColors.White,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
-                            text = "Google",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                }
-
-                // Apple Button
-                OutlinedButton(
-                    onClick = { /* Handle Apple login */ },
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = AppColors.InputBackground,
-                        contentColor = AppColors.White
-                    ),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, AppColors.InputBorder),
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(48.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Smartphone,
-                            contentDescription = "Apple",
-                            tint = AppColors.White,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
-                            text = "Apple",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
             // Sign Up Link
             Row(
                 modifier = Modifier
@@ -402,17 +315,39 @@ fun LoginScreenEmail() {
                     color = AppColors.Primary,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.clickable { /* Handle sign up */ }
+                    modifier = Modifier.clickable { onRegisterClick() }
                 )
             }
         }
     }
+
+    val context = LocalContext.current
+    LaunchedEffect(
+        key1 = uiState.authenticationSucceed,
+        key2 = uiState.authErrorMessage,
+        block = {
+            if (uiState.authenticationSucceed) {
+                onNavigateToDashboard()
+            }
+
+            if (uiState.authErrorMessage != null) {
+                //showToast(uiState.authErrorMessage!!)
+                Toast.makeText(context,uiState.authErrorMessage!!,Toast.LENGTH_SHORT).show()
+            }
+        }
+    )
 }
 
 @Composable
 @Preview
 fun LoginEmailPreview() {
-    LoginScreenEmail()
+    LoginScreenEmail(
+        uiState = AccountUiState(),
+        onEmailChange = {},
+        onPasswordChange = {},
+        onLoginClick = {},
+        onNavigateToDashboard = {},
+    )
 }
 
 
