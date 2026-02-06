@@ -247,8 +247,8 @@ fun LoadingDots() {
     }
 }
 
-@Preview
-@Composable
-fun SplashPreview(){
-    SplashScreen()
-}
+//@Preview
+//@Composable
+//fun SplashPreview(){
+//    SplashScreen()
+//}
