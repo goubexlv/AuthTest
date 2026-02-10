@@ -9,6 +9,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cm.daccvo.auth.security.AuthState
 import cm.daccvo.auth.security.UserSettingsDataStore
+import cm.daccvo.auth.ui.Onboarding.Onboarding
 import cm.daccvo.auth.ui.dashboard.Dashboard
 import cm.daccvo.auth.ui.register.Register
 import kotlinx.coroutines.delay
@@ -23,24 +24,21 @@ data class Splash(val userSettings: UserSettingsDataStore) : Screen {
 //            userSettings.onAppStart()
 //        }
 //
-//        LaunchedEffect(authState) {
-//            when (authState) {
-//                AuthState.Unauthenticated ->
-//                    navigator.replaceAll(Register)
-//
-//                AuthState.Authenticated ->
-//                    navigator.replaceAll(Dashboard)
-//
-//                AuthState.Checking -> Unit
-//            }
-//        }
+
 
         SplashScreen(
             onSplashFinished = {
-                if (authState is AuthState.Authenticated) {
-                    navigator.replaceAll(Dashboard)
-                } else {
-                    navigator.replaceAll(Register)
+                when (authState) {
+                    AuthState.Unauthenticated ->
+                        navigator.replaceAll(Register)
+
+                    AuthState.Authenticated ->
+                        navigator.replaceAll(Dashboard)
+
+                    AuthState.CheckingFirstUse ->
+                        navigator.replaceAll(Onboarding(userSettings))
+
+                    AuthState.Checking -> Unit
                 }
             }
         )

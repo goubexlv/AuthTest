@@ -21,6 +21,11 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.ktor.client.okhttp)
+            implementation(libs.ktor.client.cio)
+            implementation(libs.ktor.client.android)
             implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
         }

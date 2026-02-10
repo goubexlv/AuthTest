@@ -11,9 +11,10 @@ interface AuthRepository {
 
     suspend fun login(email:String?, phone:String?, password:String,model: LoginMethod) : Response
 
-    suspend fun verify(email:String?, phone:String?, model: LoginMethod): Boolean
+    suspend fun verify(email:String?, phone:String?, model: LoginMethod): Response
 
     suspend fun confirm(email:String?, phone:String?,code:String, model: LoginMethod): Response
+    suspend fun getUser() : Response?
 
 
 }

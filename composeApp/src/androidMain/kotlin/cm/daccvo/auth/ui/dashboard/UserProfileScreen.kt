@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cm.daccvo.auth.uiState.ProfileDataUiState
 
 data class UserProfile(
     val name: String,
@@ -34,17 +35,13 @@ data class UserProfile(
 
 @Composable
 fun UserProfileScreen(
-    user: UserProfile = UserProfile(
-        name = "Alex Harrison",
-        email = "alex.harrison@example.com"
-    ),
+    user: ProfileDataUiState,
     onBackClick: () -> Unit = {},
     onAccountInfoClick: () -> Unit = {},
     onSecurityClick: () -> Unit = {},
     onNotificationsClick: () -> Unit = {},
     onPrivacyClick: () -> Unit = {},
     onLogoutClick: () -> Unit = {},
-    isDarkMode: Boolean = isSystemInDarkTheme()
 ) {
     val scrollState = rememberScrollState()
 
@@ -52,8 +49,7 @@ fun UserProfileScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                if (isDarkMode) AppColors.BackgroundDark
-                else AppColors.BackgroundLight
+               AppColors.BackgroundDark
             )
     ) {
         Column(
@@ -182,7 +178,7 @@ fun UserProfileScreen(
 
 @Composable
 private fun ProfileHeader(
-    user: UserProfile,
+    user: ProfileDataUiState,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -203,37 +199,32 @@ private fun ProfileHeader(
                 .padding(bottom = 24.dp),
             contentAlignment = Alignment.Center
         ) {
-            if (user.avatarUrl != null) {
+
                 Icon(
                     imageVector = Icons.Default.Person,
                     contentDescription = "Profile Picture",
                     tint = AppColors.White.copy(alpha = 0.2f),
                     modifier = Modifier.size(72.dp)
                 )
-            } else {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "Profile Picture",
-                    tint = AppColors.White.copy(alpha = 0.2f),
-                    modifier = Modifier.size(72.dp)
-                )
-            }
+
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
         // Nom de l'utilisateur
         Text(
-            text = user.name,
+            text = "goube",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = AppColors.White,
             lineHeight = 28.sp
         )
 
+        val identiter : String? = if (user.profile?.isEmailVerified != null) user.profile?.email else user.profile?.phone
+
         // Email
         Text(
-            text = user.email,
+            text = identiter.toString(),
             fontSize = 16.sp,
             fontWeight = FontWeight.Normal,
             color = AppColors.TextMuted,
@@ -297,10 +288,6 @@ private fun ProfileMenuItem(
 @Composable
 private fun UserProfileScreenPreviewDark() {
     UserProfileScreen(
-        user = UserProfile(
-            name = "Alex Harrison",
-            email = "alex.harrison@example.com"
-        ),
-        isDarkMode = true
+        user = ProfileDataUiState(),
     )
 }

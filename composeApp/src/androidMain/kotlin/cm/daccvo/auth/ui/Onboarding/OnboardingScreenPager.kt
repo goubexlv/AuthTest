@@ -51,18 +51,18 @@ fun OnboardingScreenPager(
     val pages = remember {
         listOf(
             OnboardingPageData(
-                title = "Secure Your World",
-                description = "Your privacy and security are our top priority with bank-grade encryption.",
+                title = "Sécurisez votre monde",
+                description = "Votre confidentialité et votre sécurité sont notre priorité absolue grâce à un cryptage de niveau bancaire.",
                 icon = Icons.Outlined.Shield
             ),
             OnboardingPageData(
-                title = "Stay Connected",
-                description = "Connect with friends and family seamlessly across all your devices.",
+                title = "Restez connecté",
+                description = "Restez en contact avec vos amis et votre famille en toute simplicité sur tous vos appareils.",
                 icon = Icons.Outlined.Diversity3
             ),
             OnboardingPageData(
-                title = "Get Started",
-                description = "Join millions of users who trust us with their most important conversations.",
+                title = "Commencer",
+                description = "Rejoignez les millions d'utilisateurs qui nous font confiance pour leurs conversations les plus importantes.",
                 icon = Icons.Outlined.RocketLaunch
             )
         )

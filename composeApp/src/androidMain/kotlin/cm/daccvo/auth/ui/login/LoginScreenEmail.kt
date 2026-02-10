@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cm.daccvo.auth.composant.LoadingOverlay
 import cm.daccvo.auth.uiState.AccountUiState
 import kotlinx.coroutines.delay
 
@@ -69,8 +70,6 @@ fun LoginScreenEmail(
     onNavigateToDashboard: () -> Unit,
     onRegisterClick: () -> Unit = {}
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var isLoginPressed by remember { mutableStateOf(false) }
 
@@ -233,12 +232,24 @@ fun LoginScreenEmail(
                         .clickable { onLoginClick() },
                     textAlign = TextAlign.End
                 )
+
+                if (
+                    uiState.authErrorMessage != null
+                ){
+                    Text(
+                        text = uiState.authErrorMessage!!,
+                        color = Color.Red,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                    )
+                }
             }
 
             // Login Button
             Button(
                 onClick = {
                     isLoginPressed = true
+                    onLoginClick()
                     // Handle login
                 },
                 colors = ButtonDefaults.buttonColors(
@@ -319,6 +330,8 @@ fun LoginScreenEmail(
                 )
             }
         }
+
+        LoadingOverlay(uiState.isAuthenticating)
     }
 
     val context = LocalContext.current

@@ -48,9 +48,7 @@ data class OnboardingPage(
     val iconName: String = "shield_with_heart"
 )
 
-/**
- * Écran d'onboarding complet avec plusieurs pages
- */
+
 @Composable
 fun OnboardingScreen(
     onSkip: () -> Unit = {},
@@ -60,18 +58,18 @@ fun OnboardingScreen(
 
     val pages = listOf(
         OnboardingPage(
-            title = "Secure Your World",
-            description = "Your privacy and security are our top priority with bank-grade encryption.",
+            title = "Sécurisez votre monde",
+            description = "Votre confidentialité et votre sécurité sont notre priorité absolue grâce à un cryptage de niveau bancaire.",
             iconName = "shield_with_heart"
         ),
         OnboardingPage(
-            title = "Stay Connected",
-            description = "Connect with friends and family seamlessly across all your devices.",
+            title = "Restez connecté",
+            description = "Restez en contact avec vos amis et votre famille en toute simplicité sur tous vos appareils.",
             iconName = "diversity_3"
         ),
         OnboardingPage(
-            title = "Get Started",
-            description = "Join millions of users who trust us with their most important conversations.",
+            title = "Commencer",
+            description = "Rejoignez les millions d'utilisateurs qui nous font confiance pour leurs conversations les plus importantes.",
             iconName = "rocket_launch"
         )
     )

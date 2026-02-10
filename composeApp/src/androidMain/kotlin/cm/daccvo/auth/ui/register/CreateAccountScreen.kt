@@ -1,5 +1,7 @@
 package cm.daccvo.auth.ui.register
 
+import android.R
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -20,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -34,8 +37,11 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cm.daccvo.auth.composant.LoadingOverlay
 import cm.daccvo.auth.ui.login.AppColors
 import cm.daccvo.auth.uiState.AccountUiState
+import cm.horion.models.domain.LoginMethod
+import kotlinx.coroutines.delay
 
 
 @Composable
@@ -49,7 +55,8 @@ fun CreateAccountScreen(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onConfirmPasswordChange: (String) -> Unit,
-    isDarkMode: Boolean = isSystemInDarkTheme()
+    onModelChange: (LoginMethod) -> Unit,
+    onNavigateToVerifieCode: () -> Unit,
 ) {
 
     var passwordVisible by remember { mutableStateOf(false) }
@@ -58,6 +65,11 @@ fun CreateAccountScreen(
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
 
+    // Indicateur de chargement centré
+    LaunchedEffect(Unit) {
+        onModelChange(LoginMethod.EMAIL)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -65,6 +77,7 @@ fun CreateAccountScreen(
                 AppColors.BackgroundDark
             )
     ) {
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -72,22 +85,6 @@ fun CreateAccountScreen(
                 .align(Alignment.Center)
                 .verticalScroll(scrollState)
         ) {
-            // Bouton retour
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(16.dp)
-//                    .padding(bottom = 8.dp)
-//            ) {
-//                Icon(
-//                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-//                    contentDescription = "Back",
-//                    tint = AppColors.WhiteAlpha50,
-//                    modifier = Modifier
-//                        .size(24.dp)
-//                        .clickable { onBackClick() }
-//                )
-//            }
 
             // En-tête
             Column(
@@ -207,6 +204,17 @@ fun CreateAccountScreen(
                 )
             }
 
+            if (
+                uiState.authErrorMessage != null
+            ){
+                Text(
+                    text = uiState.authErrorMessage!!,
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                )
+            }
+
 
             // Bouton Sign Up
             Button(
@@ -255,8 +263,24 @@ fun CreateAccountScreen(
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 40.dp)
             )
+
+
         }
+        LoadingOverlay(uiState.isAuthenticating)
     }
+
+    val context = LocalContext.current
+    LaunchedEffect(
+        key1 = uiState.authenticationSucceed,
+        key2 = uiState.authErrorMessage,
+        block = {
+            if (uiState.authenticationSucceed) {
+                onNavigateToVerifieCode()
+            }
+
+        }
+    )
+
 }
 
 @Composable
@@ -492,10 +516,16 @@ private fun LoginPrompt(
     )
 }
 
-//@Preview(name = "Dark Mode", showBackground = true)
-//@Composable
-//private fun CreateAccountScreenPreview() {
-//    CreateAccountScreen(
-//        isDarkMode = true
-//    )
-//}
+@Preview(name = "Dark Mode", showBackground = true)
+@Composable
+private fun CreateAccountScreenPreview() {
+    CreateAccountScreen(
+        uiState = AccountUiState(),
+        onSignUpClick = {},
+        onEmailChange = {},
+        onPasswordChange = {},
+        onConfirmPasswordChange = {},
+        onNavigateToVerifieCode = {},
+        onModelChange = {}
+    )
+}

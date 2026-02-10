@@ -9,6 +9,7 @@ interface UserSettingsDataStore {
     val userFlow: StateFlow<ProfileResponse?>
     val tokenFlow: StateFlow<String?>
     val authState: StateFlow<AuthState>
+    val useFlow: StateFlow<Boolean>
 
     fun getRefreshToken(): String?
     fun getAccessToken(): String?
@@ -20,6 +21,9 @@ interface UserSettingsDataStore {
 
     fun saveUserSettings(settingsData: ProfileResponse?)
     fun getUserSettings(): ProfileResponse?
+
+    fun hasSeenOnboarding(): Boolean
+    fun markOnboardingSeen(use : Boolean)
 
     //logique pour voir si user es connecter
     fun onAppStart()

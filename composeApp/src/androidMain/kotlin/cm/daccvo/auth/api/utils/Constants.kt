@@ -1,5 +1,5 @@
 package cm.daccvo.auth.api.utils
 
 object Constants {
-    val AUTH_URL = "http://192.168.1.136:"
+    val AUTH_URL = "http://192.168.43.55:8080"
 }

@@ -2,6 +2,7 @@ package cm.daccvo.auth.security
 
 import cm.daccvo.auth.utils.Constants.TOKEN_KEY
 import cm.daccvo.auth.utils.Constants.USER_KEY
+import cm.daccvo.auth.utils.Constants.USE_KEY
 import cm.horion.models.response.ProfileResponse
 import cm.horion.models.response.Token
 import com.russhwolf.settings.Settings
@@ -23,14 +24,18 @@ class UserSettingsDataStoreImpl(private val settings: Settings,private val secur
     private val _authState = MutableStateFlow<AuthState>(AuthState.Checking)
     override val authState: StateFlow<AuthState> = _authState
 
+    private val _useFlow = MutableStateFlow<Boolean>(hasSeenOnboarding())
+    override val useFlow: StateFlow<Boolean> = _useFlow
+
     // connexion verification
     override fun onAppStart() {
         val token = getTokenSettings()
+        val hasSeenOnboarding = hasSeenOnboarding()
 
-        _authState.value = if (token != null) {
-            AuthState.Authenticated
-        } else {
-            AuthState.Unauthenticated
+        _authState.value = when {
+            !hasSeenOnboarding == false -> AuthState.CheckingFirstUse
+            token != null -> AuthState.Authenticated
+            else -> AuthState.Unauthenticated
         }
     }
 
@@ -41,6 +46,15 @@ class UserSettingsDataStoreImpl(private val settings: Settings,private val secur
     override fun logout() {
         clear()
         _authState.value = AuthState.Unauthenticated
+    }
+
+    override fun hasSeenOnboarding(): Boolean {
+        return settings.getBoolean(USE_KEY, false)
+    }
+
+    override fun markOnboardingSeen(use: Boolean) {
+        settings[USE_KEY] = use
+        _useFlow.value = use
     }
 
     // TOKEN (secure)
@@ -96,6 +110,7 @@ class UserSettingsDataStoreImpl(private val settings: Settings,private val secur
         settings.remove(USER_KEY)
         _tokenFlow.value = null
         _userFlow.value = null
+        _useFlow.value = false
     }
 
 }

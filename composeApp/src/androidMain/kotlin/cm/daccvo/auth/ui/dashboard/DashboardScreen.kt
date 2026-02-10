@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cm.daccvo.auth.uiState.ProfileDataUiState
 
 
 data class DashboardUser(
@@ -63,7 +64,7 @@ object AppColors {
 //@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
-    user: DashboardUser = DashboardUser("JD", "John", "Doe"),
+    user: ProfileDataUiState,
     onNotificationClick: () -> Unit = {},
     onViewProfileClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
@@ -150,7 +151,7 @@ fun DashboardScreen(
                     StatusCard(
                         icon = Icons.Default.Schedule,
                         label = "Dernière connexion",
-                        value = user.lastLogin,
+                        value = "2h ago",
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -246,7 +247,7 @@ fun DashboardScreen(
 
 @Composable
 private fun DashboardHeader(
-    user: DashboardUser,
+    user: ProfileDataUiState,
     onNotificationClick: () -> Unit
 ) {
     Row(
@@ -271,7 +272,7 @@ private fun DashboardHeader(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = user.initials,
+                    text = "GB",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = AppColors.White
@@ -287,7 +288,7 @@ private fun DashboardHeader(
                     color = AppColors.TextMuted
                 )
                 Text(
-                    text = "${user.firstName} ${user.lastName}",
+                    text = "goube orion",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = AppColors.White
@@ -568,12 +569,7 @@ private fun BottomNavItem(
 @Composable
 private fun DashboardScreenPreview() {
     DashboardScreen(
-        user = DashboardUser(
-            initials = "JD",
-            firstName = "John",
-            lastName = "Doe",
-            lastLogin = "2h ago"
-        ),
+        user = ProfileDataUiState(),
         selectedTab = 0
     )
 }

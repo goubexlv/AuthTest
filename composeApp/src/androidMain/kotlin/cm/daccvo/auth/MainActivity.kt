@@ -11,6 +11,9 @@ import cm.daccvo.auth.di.initKoin
 import cm.daccvo.auth.security.SecureStorage
 import cm.daccvo.auth.security.UserSettingsDataStore
 import cm.daccvo.auth.security.UserSettingsDataStoreImpl
+import cm.daccvo.auth.utils.appContext
+import cm.daccvo.auth.utils.initSettings
+import cm.daccvo.auth.utils.provideSettings
 import org.koin.java.KoinJavaComponent.inject
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.SharedPreferencesSettings
@@ -19,20 +22,19 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        initKoin()
+        initSettings(this)
+        //initKoin()
 
-        // Settings (russhwolf)
-        val settings = Settings()
         // Secure storage
-        val secureStorage = SecureStorage(this)
+        val secureStorage = SecureStorage(appContext)
 
         // DataStore
         val userSettings = UserSettingsDataStoreImpl(
-            settings = settings,
+            settings = provideSettings(),
             secureStorage = secureStorage
         )
 
-        //userSettings.onAppStart() // 🔥 important
+        userSettings.onAppStart() // 🔥 important
         setContent {
 
             App(userSettings)

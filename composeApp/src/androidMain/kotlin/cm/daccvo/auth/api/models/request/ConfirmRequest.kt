@@ -9,20 +9,10 @@ open class ConfirmRequest
 data class ConfirmEmail(
     val email : String? = null,
     val code : String? = null
-): ConfirmRequest() {
-    init {
-        require(code?.length == 6) { "Le code doit contenir 6 chiffres" }
-        require(code.all { it.isDigit() }) { "Le code ne doit contenir que des chiffres" }
-    }
-}
+): ConfirmRequest()
 
 @Serializable
 data class ConfirmPhone(
     val phone : String? = null,
     val code : String? = null
-): ConfirmRequest(){
-    init {
-        require(code?.length == 6) { "Le code doit contenir 6 chiffres" }
-        require(code.all { it.isDigit() }) { "Le code ne doit contenir que des chiffres" }
-    }
-}
+): ConfirmRequest()

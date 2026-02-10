@@ -1,6 +1,7 @@
 package cm.daccvo.auth.ui.login
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -15,6 +16,11 @@ object LoginEmail : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val viewModel : AccountViewModel = koinViewModel()
+        LaunchedEffect(Unit) {
+            viewModel.resetState()
+        }
+
+        viewModel.updateModel(LoginMethod.EMAIL)
         LoginScreenEmail(
             onPhoneLoginClick = {
                 navigator.push(LoginPhone)
@@ -26,10 +32,10 @@ object LoginEmail : Screen {
             onEmailChange = viewModel::updateEmail,
             onPasswordChange = viewModel::updatePassword,
             onLoginClick = {
-                viewModel.login(LoginMethod.EMAIL)
+                viewModel.login()
             },
             onNavigateToDashboard = {
-                navigator.push(Dashboard)
+                navigator.replaceAll(Dashboard)
             }
         )
     }

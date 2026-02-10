@@ -1,34 +1,26 @@
 package cm.daccvo.auth.ui.dashboard
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cm.daccvo.auth.ui.login.LoginEmail
-import cm.daccvo.auth.viewModels.AccountViewModel
 import cm.daccvo.auth.viewModels.DashboardViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
-object Dashboard : Screen {
+object Profile : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val viewModel : DashboardViewModel = koinViewModel()
-        LaunchedEffect(Unit) {
-            viewModel.resetState()
-        }
-
-        DashboardScreen(
+        UserProfileScreen(
             user = viewModel.userInfoUiState,
-            selectedTab = 0,
-            onViewProfileClick = {
-                navigator.push(Profile)
-            },
             onLogoutClick = {
-                viewModel.logout()
                 navigator.push(LoginEmail)
-
+                viewModel.logout()
+            },
+            onBackClick= {
+                navigator.push(Dashboard)
             }
         )
     }

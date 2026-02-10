@@ -1,5 +1,6 @@
 package cm.daccvo.auth.ui.verify
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,6 +20,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -30,24 +32,35 @@ import androidx.compose.ui.unit.sp
 import cm.daccvo.auth.ui.login.AppColors
 import cm.daccvo.auth.ui.login.LoginScreenPhone
 import cm.daccvo.auth.uiState.AccountUiState
+import cm.horion.models.domain.LoginMethod
 import kotlinx.coroutines.delay
 
 @Composable
 fun VerificationCodeScreen(
     uiState: AccountUiState,
     onCodeChange: (String) -> Unit,
-    verificationId: String? = null,
-    phoneNumber: String = "",
     onBackClick: () -> Unit = {},
-    onVerification: () -> Unit = {}
+    onVerification: () -> Unit = {},
+    onResendCode: () -> Unit = {},
+    onNavigaterToResult: () -> Unit = {}
 ) {
-    var code by remember { mutableStateOf(List(6) { uiState.code }) }
-    val focusRequesters = remember { List(6) { FocusRequester() } }
-    var isVerifying by remember { mutableStateOf(false) }
+
     var isVerifyPressed by remember { mutableStateOf(false) }
     var resendCountdown by remember { mutableStateOf(60) }
     var canResend by remember { mutableStateOf(false) }
-    var error by remember { mutableStateOf<String?>(null) }
+    var code by remember { mutableStateOf(List(6) { "" }) }
+    val focusRequesters = remember { List(6) { FocusRequester() } }
+
+    val isVerifying = uiState.isAuthenticating
+    val error = uiState.authErrorMessage
+
+    // Focus premier champ
+    LaunchedEffect(Unit) {
+        focusRequesters[0].requestFocus()
+    }
+
+
+
 
     // Countdown timer pour resend
     LaunchedEffect(Unit) {
@@ -62,6 +75,11 @@ fun VerificationCodeScreen(
     LaunchedEffect(Unit) {
         focusRequesters[0].requestFocus()
     }
+
+//    LaunchedEffect(Unit) {
+//        onResendCode()
+//    }
+
 
     Box(
         modifier = Modifier
@@ -161,11 +179,8 @@ fun VerificationCodeScreen(
 
             // Code Input Fields
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 32.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally)
+                horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
+                modifier = Modifier.fillMaxWidth()
             ) {
                 code.forEachIndexed { index, digit ->
                     CodeDigitField(
@@ -175,16 +190,12 @@ fun VerificationCodeScreen(
                                 val newCode = code.toMutableList()
                                 newCode[index] = newValue
                                 code = newCode
-                                onCodeChange(newValue)
-                                // Auto-focus sur le champ suivant
+
+                                // envoyer le code complet au VM
+                                onCodeChange(newCode.joinToString(""))
+
                                 if (newValue.isNotEmpty() && index < 5) {
                                     focusRequesters[index + 1].requestFocus()
-                                }
-
-                                // Vérifier si le code est complet
-                                if (newCode.all { it.isNotEmpty() }) {
-                                    // Auto-vérification
-                                    isVerifying = true
                                 }
                             }
                         },
@@ -197,60 +208,55 @@ fun VerificationCodeScreen(
                         isError = error != null
                     )
                 }
-            }
 
-            // Message d'erreur
-            if (error != null) {
+
+            }
+            if(uiState.authErrorMessage == null) "" else uiState.authErrorMessage?.let {
                 Text(
-                    text = error!!,
-                    color = MaterialTheme.colorScheme.error,
-                    fontSize = 14.sp,
+                    text = it,
+                    color = Color.Red,
+                    fontSize = 12.sp,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(top = 16.dp),
-                    textAlign = TextAlign.Center
+                        .padding(start = 16.dp, top = 4.dp)
+
                 )
             }
 
             // Verify Button
             Button(
                 onClick = {
-                    isVerifyPressed = true
-                    isVerifying = true
-                    onVerification()
+                    //if (code.all { it.isNotEmpty() }) {
+                        onVerification()
+                    //}
                 },
                 enabled = !isVerifying && code.all { it.isNotEmpty() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 40.dp, bottom = 8.dp)
+                    .height(56.dp)
+                    .scale(1f),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = AppColors.Primary,
                     contentColor = AppColors.White
                 ),
                 shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 32.dp, bottom = 8.dp)
-                    .height(56.dp)
-                    .scale(if (isVerifyPressed) 0.98f else 1f),
                 elevation = ButtonDefaults.buttonElevation(
                     defaultElevation = 8.dp,
-                    pressedElevation = 4.dp
+                    pressedElevation = 2.dp
                 )
             ) {
                 if (isVerifying) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
-                        color = AppColors.White,
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text(
-                        text = "Suivant",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Text("Suivant")
                 }
             }
+
+
 
             // Reset pressed state
             LaunchedEffect(isVerifyPressed) {
@@ -259,6 +265,8 @@ fun VerificationCodeScreen(
                     isVerifyPressed = false
                 }
             }
+
+
 
             // Resend Code
             Row(
@@ -285,6 +293,8 @@ fun VerificationCodeScreen(
                             resendCountdown = 60
                             canResend = false
                             code = List(6) { "" }
+                            onCodeChange("")
+                            onResendCode()
                             focusRequesters[0].requestFocus()
                         }
                     )
@@ -313,6 +323,22 @@ fun VerificationCodeScreen(
             )
         }
     }
+
+    val context = LocalContext.current
+    LaunchedEffect(
+        key1 = uiState.authenticationSucceed,
+        key2 = uiState.authErrorMessage,
+        block = {
+            if (uiState.authenticationSucceed) {
+                onNavigaterToResult()
+            }
+
+            if (uiState.authErrorMessage != null) {
+                //showToast(uiState.authErrorMessage!!)
+                Toast.makeText(context,uiState.authErrorMessage!!,Toast.LENGTH_SHORT).show()
+            }
+        }
+    )
 }
 
 @Composable

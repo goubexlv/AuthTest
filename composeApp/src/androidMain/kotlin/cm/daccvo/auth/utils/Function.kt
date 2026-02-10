@@ -4,13 +4,14 @@ import android.content.Context
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.SharedPreferencesSettings
 
-//lateinit var appContext: Context
-//
-//fun initSettings(context: Context) {
-//    appContext = context.applicationContext
-//}
-//
-//fun provideSettings(): Settings {
-//    val sharedPrefs = appContext.getSharedPreferences("user_settings", Context.MODE_PRIVATE)
-//    return SharedPreferencesSettings(sharedPrefs)
-//}
+lateinit var appContext: Context
+    private set
+
+fun initSettings(context: Context) {
+    appContext = context.applicationContext
+}
+
+fun provideSettings(): Settings {
+    val sharedPrefs = appContext.getSharedPreferences("user_settings", Context.MODE_PRIVATE)
+    return SharedPreferencesSettings(sharedPrefs)
+}
