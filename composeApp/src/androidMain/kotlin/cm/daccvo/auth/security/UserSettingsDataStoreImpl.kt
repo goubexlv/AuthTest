@@ -33,7 +33,7 @@ class UserSettingsDataStoreImpl(private val settings: Settings,private val secur
         val hasSeenOnboarding = hasSeenOnboarding()
 
         _authState.value = when {
-            !hasSeenOnboarding == false -> AuthState.CheckingFirstUse
+            hasSeenOnboarding == false -> AuthState.CheckingFirstUse
             token != null -> AuthState.Authenticated
             else -> AuthState.Unauthenticated
         }

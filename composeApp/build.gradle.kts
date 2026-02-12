@@ -55,6 +55,7 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.peekaboo.ui)
+            implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

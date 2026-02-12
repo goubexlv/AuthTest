@@ -3,6 +3,7 @@ package cm.daccvo.auth
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,24 +24,39 @@ import org.jetbrains.compose.resources.painterResource
 import authtest.composeapp.generated.resources.Res
 import authtest.composeapp.generated.resources.compose_multiplatform
 import cm.daccvo.auth.security.UserSettingsDataStore
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun App(userSettings: UserSettingsDataStore) {
+    val systemUiController = rememberSystemUiController()
+    val isDarkTheme = isSystemInDarkTheme()
 
-        Surface(
-            modifier = Modifier
-                .statusBarsPadding()
-                .systemBarsPadding()
-                .fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ){
-            CompositionLocalProvider(
-                LocalStatusBarColor provides Color.Transparent
-            ) {
-                AuthApp(userSettings)
-            }
-        }
+    // Couleur de la status bar selon le thème
+    val statusBarColor = if (isDarkTheme) {
+        Color.Black // ou MaterialTheme.colorScheme.surface pour thème sombre
+    } else {
+        Color.Black // ou MaterialTheme.colorScheme.surface pour thème clair
+    }
 
+    // Adapter les couleurs selon le thème
+    SideEffect {
+        systemUiController.setStatusBarColor(
+            color = statusBarColor,
+            darkIcons = !isDarkTheme
+        )
+    }
+
+    Surface(
+        modifier = Modifier
+            .statusBarsPadding()
+            .systemBarsPadding()
+            .fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+
+        AuthApp(userSettings)
+
+    }
 }
 
 val LocalStatusBarColor = compositionLocalOf<Color> { Color.Unspecified }
