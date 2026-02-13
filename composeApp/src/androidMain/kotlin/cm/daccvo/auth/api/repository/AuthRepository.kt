@@ -16,5 +16,9 @@ interface AuthRepository {
     suspend fun confirm(email:String?, phone:String?,code:String, model: LoginMethod): Response
     suspend fun getUser() : Response?
 
+    suspend fun logout() : Response?
+
+    suspend fun refreshToken() : Response?
+
 
 }

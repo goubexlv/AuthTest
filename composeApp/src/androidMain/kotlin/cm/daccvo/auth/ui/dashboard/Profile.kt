@@ -16,8 +16,8 @@ object Profile : Screen {
         UserProfileScreen(
             user = viewModel.userInfoUiState,
             onLogoutClick = {
-                navigator.push(LoginEmail)
                 viewModel.logout()
+                navigator.push(LoginEmail)
             },
             onBackClick= {
                 navigator.push(Dashboard)

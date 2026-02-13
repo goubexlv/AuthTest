@@ -9,6 +9,7 @@ import cm.daccvo.auth.security.UserSettingsDataStore
 import cm.horion.models.domain.ClientType
 import cm.horion.models.domain.LoginMethod
 import cm.horion.models.request.LoginRequest
+import cm.horion.models.request.RefreshTokenRequest
 import cm.horion.models.request.RegisterRequest
 import cm.horion.models.request.VerifyEmail
 import cm.horion.models.request.VerifyPhone
@@ -88,7 +89,6 @@ class AuthService(private val settingStore : UserSettingsDataStore)  {
     suspend fun getUser() : Response? {
         val response: HttpResponse = client.get("$AUTH_URL${Endpoint.Profile.path}") {
             accept(ContentType.Application.Json)
-            Log.d("CLIENT","${settingStore.getAccessToken()}")
             headers {
                 append(HttpHeaders.Authorization, "Bearer ${settingStore.getAccessToken()}")
                 append("X-Client-Type", ClientType.MOBILE.name)
@@ -141,8 +141,51 @@ class AuthService(private val settingStore : UserSettingsDataStore)  {
             Response(success = true, message = res.message)
         } else {
             val res = Json.decodeFromString<Error>(responseText)
-            Log.d("CLIENT",res.error)
             Response(success = false, message = res.error)
+        }
+    }
+
+    suspend fun logout() : Response? {
+        val response: HttpResponse = client.get("$AUTH_URL${Endpoint.Logout.path}") {
+            accept(ContentType.Application.Json)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${settingStore.getAccessToken()}")
+                append("X-Client-Type", ClientType.MOBILE.name)
+            }
+        }
+        val responseText = response.bodyAsText()
+        return if (response.status == HttpStatusCode.OK) {
+            val res = Json.decodeFromString<Success>(responseText)
+            Response(success = true, message = res.message)
+        } else if(response.status == HttpStatusCode.InternalServerError) {
+            val res = Json.decodeFromString<Error>(responseText)
+            Response(success = false, message = res.error)
+        } else {
+            null
+        }
+
+    }
+
+    suspend fun refreshToken() : Response? {
+        val token = settingStore.getRefreshToken() ?: return null
+        val response: HttpResponse = client.post("$AUTH_URL${Endpoint.RefreshToken.path}") {
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            headers {
+                append("X-Client-Type", ClientType.MOBILE.name)
+            }
+            setBody(RefreshTokenRequest(token))
+        }
+        val responseText = response.bodyAsText()
+        return if (response.status == HttpStatusCode.OK) {
+            val token = Json.decodeFromString<Token>(responseText)
+            settingStore.onLoginSuccess(token)
+            Response(success = true, message = "refresh")
+        } else if(response.status == HttpStatusCode.InternalServerError) {
+            val res = Json.decodeFromString<Error>(responseText)
+            Response(success = false, message = res.error)
+        } else {
+            null
         }
     }
 

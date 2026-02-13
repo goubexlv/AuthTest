@@ -58,8 +58,31 @@ class AuthUseCase : KoinComponent {
         return repository.confirm(newEmail,newPhone,code,model)
     }
 
-    suspend fun getUser() : Response? {
-        return repository.getUser()
+    suspend fun getUser() : Response?  =
+        withAutoRefresh {
+            repository.getUser()
+        }
+
+
+    suspend fun logout() : Response? {
+        return repository.logout()
+    }
+
+    suspend fun <T> withAutoRefresh(block: suspend () -> T?): T? {
+        val response = block()
+
+        // si null → probablement 401
+        if (response == null) {
+            val refresh = repository.refreshToken()
+
+            if (refresh?.success == true) {
+                return block() // retry après refresh
+            }
+        }
+
+        return response
     }
 
 }
+
+

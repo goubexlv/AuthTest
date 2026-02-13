@@ -88,5 +88,25 @@ class AuthRepositoryImpl (
         }
     }
 
+    override suspend fun logout(): Response? {
+        return withContext(Dispatchers.IO){
+            try {
+                authService.logout()
+            } catch (e: Exception){
+                Response(false,"Serveur injoignable, reesayer plus tard")
+            }
+        }
+    }
+
+    override suspend fun refreshToken(): Response? {
+        return withContext(Dispatchers.IO){
+            try {
+                authService.refreshToken()
+            } catch (e: Exception){
+                Response(false,"Serveur injoignable, reesayer plus tard")
+            }
+        }
+    }
+
 
 }

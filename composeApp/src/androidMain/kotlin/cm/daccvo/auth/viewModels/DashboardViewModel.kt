@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cm.daccvo.auth.api.usecase.AuthUseCase
 import cm.daccvo.auth.security.UserSettingsDataStore
 import cm.daccvo.auth.uiState.AccountUiState
 import cm.daccvo.auth.uiState.ProfileDataUiState
@@ -12,7 +13,8 @@ import cm.horion.models.response.ProfileResponse
 import kotlinx.coroutines.launch
 
 class DashboardViewModel(
-    private val setting : UserSettingsDataStore
+    private val setting : UserSettingsDataStore,
+    private val authUseCase: AuthUseCase
 ) : ViewModel(){
 
     var userInfoUiState by mutableStateOf(ProfileDataUiState())
@@ -39,8 +41,17 @@ class DashboardViewModel(
     }
 
     fun logout() {
-        setting.logout()
+        viewModelScope.launch {
+            val response = authUseCase.logout()
+            if (response == null) {
+
+            } else if (response.success) {
+                setting.logout()
+            }
+        }
+
     }
+
     fun resetState() {
         userInfoUiState = ProfileDataUiState()
     }
