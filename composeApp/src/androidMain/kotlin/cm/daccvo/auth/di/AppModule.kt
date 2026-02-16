@@ -27,7 +27,7 @@ val appModule = module {
     single { AuthUseCase() }
     single { AuthService(get()) }
     viewModel { AccountViewModel(get()) }
-    viewModel { DashboardViewModel(get()) }
+    viewModel { DashboardViewModel(get(),get()) }
 
 }
 
