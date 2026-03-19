@@ -117,9 +117,7 @@ class AuthService(private val settingStore : UserSettingsDataStore)  {
 
         val responseText = response.bodyAsText()
         return if (response.status == HttpStatusCode.OK) {
-            val token = response.body<Token>()
-            settingStore.saveTokenSettings(token)
-            Response(success = true, message = "verification echec")
+            Response(success = true, message = "verification reussi")
         } else {
             val res = Json.decodeFromString<Error>(responseText)
             Response(success = false, message = res.error)

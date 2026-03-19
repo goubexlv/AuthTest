@@ -1,22 +1,49 @@
 package cm.daccvo.auth.security
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
-class SecureStorage(context: Context) {
+class SecureStorage(private val context: Context) {
 
-    private val masterKey = MasterKey.Builder(context)
-        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-        .build()
+    private val prefsName = "secure_prefs"
 
-    private val securePrefs = EncryptedSharedPreferences.create(
-        context,
-        "secure_prefs",
-        masterKey,
-        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-    )
+    private val masterKey: MasterKey by lazy {
+        MasterKey.Builder(context)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+    }
+
+    private val securePrefs: SharedPreferences by lazy {
+        createEncryptedPrefs()
+    }
+
+    private fun createEncryptedPrefs(): SharedPreferences {
+        return try {
+            EncryptedSharedPreferences.create(
+                context,
+                prefsName,
+                masterKey,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            )
+        } catch (e: Exception) {
+            // 🔥 Si clé invalide / corrompue
+            context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
+                .edit()
+                .clear()
+                .apply()
+
+            EncryptedSharedPreferences.create(
+                context,
+                prefsName,
+                masterKey,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            )
+        }
+    }
 
     fun save(key: String, value: String) {
         securePrefs.edit().putString(key, value).apply()
@@ -33,3 +60,4 @@ class SecureStorage(context: Context) {
         securePrefs.edit().clear().apply()
     }
 }
+

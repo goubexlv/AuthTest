@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 class DashboardViewModel(
     private val setting : UserSettingsDataStore,
     private val authUseCase: AuthUseCase
-) : ViewModel(){
+) : ViewModel() {
 
     var userInfoUiState by mutableStateOf(ProfileDataUiState())
         private set
