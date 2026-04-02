@@ -68,6 +68,10 @@ class AuthUseCase : KoinComponent {
         return repository.logout()
     }
 
+    suspend fun refreshToken() : Response? {
+        return repository.refreshToken()
+    }
+
     suspend fun <T> withAutoRefresh(block: suspend () -> T?): T? {
         val response = block()
 

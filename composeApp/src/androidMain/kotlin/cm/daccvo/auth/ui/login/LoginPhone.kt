@@ -1,7 +1,9 @@
 package cm.daccvo.auth.ui.login
 
+import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -15,7 +17,9 @@ object LoginPhone : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel : AccountViewModel = koinViewModel()
+        val viewModel: AccountViewModel = koinViewModel(
+            viewModelStoreOwner = LocalContext.current as ComponentActivity
+        )
 
         LaunchedEffect(Unit) {
             viewModel.resetState()
@@ -34,9 +38,6 @@ object LoginPhone : Screen {
             onPasswordChange = viewModel::updatePassword,
             onLoginClick = {
                 viewModel.login()
-            },
-            onNavigateToDashboard = {
-                navigator.replaceAll(Dashboard)
             }
         )
     }

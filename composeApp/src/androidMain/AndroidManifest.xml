@@ -14,12 +14,80 @@
         <activity
             android:exported="true"
             android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+
+        <activity
+            android:name=".Activity.LoginActivity"
+            android:launchMode="standard"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data
+                    android:scheme="authapp"
+                    android:host="login"/>
+            </intent-filter>
+
+        </activity>
+
+        <activity
+            android:name=".Activity.ExchangeActivity"
+            android:theme="@style/Theme.Transparent"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="authapp"
+                    android:host="exchange-token"/>
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".Activity.LogoutActivity"
+            android:theme="@style/Theme.Transparent"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="authapp"
+                    android:host="logout"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".Activity.UserInfoActivity"
+            android:theme="@style/Theme.Transparent"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="authapp"
+                    android:host="user_info"/>
+            </intent-filter>
+        </activity>
+
+
     </application>
 
 </manifest>

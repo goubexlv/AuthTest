@@ -78,6 +78,10 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+        jniLibs {
+            // Force l'alignement des bibliothèques natives pour la compatibilité 16ko
+            useLegacyPackaging = true
+        }
     }
     buildTypes {
         getByName("release") {

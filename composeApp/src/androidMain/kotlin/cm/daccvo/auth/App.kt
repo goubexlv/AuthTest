@@ -27,7 +27,7 @@ import cm.daccvo.auth.security.UserSettingsDataStore
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun App(userSettings: UserSettingsDataStore) {
+fun App(onLoginSuccess: () -> Unit) {
     val systemUiController = rememberSystemUiController()
     val isDarkTheme = isSystemInDarkTheme()
 
@@ -54,7 +54,7 @@ fun App(userSettings: UserSettingsDataStore) {
         color = MaterialTheme.colorScheme.background
     ) {
 
-        AuthApp(userSettings)
+        AuthApp(onLoginSuccess)
 
     }
 }

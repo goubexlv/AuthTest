@@ -43,7 +43,10 @@ import models.request.ConfirmRequest
 data class Error(val error : String)
 @Serializable
 data class Success(val message : String,val attemptsRemaining: String? = null,val canRetry : Boolean? =null ,val canRequestNewCode : Boolean? =null)
-
+@Serializable
+data class ExchangeTokenResponse(
+    val accessToken: String
+)
 class AuthService(private val settingStore : UserSettingsDataStore)  {
 
     suspend fun register(request : RegisterRequest) : Response {
@@ -162,6 +165,28 @@ class AuthService(private val settingStore : UserSettingsDataStore)  {
             null
         }
 
+    }
+
+    suspend fun exchangeToken() : Response? {
+        val token = settingStore.getRefreshToken() ?: return null
+        val response: HttpResponse = client.post("$AUTH_URL${Endpoint.Exchange.path}") {
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer $token")
+                append("X-Client-Type", ClientType.MOBILE.name)
+            }
+        }
+        val responseText = response.bodyAsText()
+        return if (response.status == HttpStatusCode.OK) {
+            val res = Json.decodeFromString<ExchangeTokenResponse>(responseText)
+            Response(success = true, message = res.accessToken)
+        } else if(response.status == HttpStatusCode.InternalServerError) {
+            val res = Json.decodeFromString<Error>(responseText)
+            Response(success = false, message = res.error)
+        } else {
+            null
+        }
     }
 
     suspend fun refreshToken() : Response? {

@@ -1,6 +1,5 @@
 package cm.daccvo.auth.uiState
 
-import android.util.Log
 import cm.horion.models.domain.LoginMethod
 
 data class AccountUiState(
@@ -13,5 +12,6 @@ data class AccountUiState(
     var isAuthenticating : Boolean = false,
     var authErrorMessage : String? = null,
     var authenticationSucceed : Boolean = false,
+    var isLoginSucceed : Boolean = false,
     var isLoading: Boolean = true
 )

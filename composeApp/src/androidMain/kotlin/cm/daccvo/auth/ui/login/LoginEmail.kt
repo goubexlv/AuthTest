@@ -1,5 +1,6 @@
 package cm.daccvo.auth.ui.login
 
+import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import cafe.adriel.voyager.core.screen.Screen
@@ -10,12 +11,19 @@ import cm.daccvo.auth.ui.register.Register
 import cm.daccvo.auth.viewModels.AccountViewModel
 import cm.horion.models.domain.LoginMethod
 import org.koin.compose.viewmodel.koinViewModel
+import androidx.activity.compose.LocalActivity
+import androidx.compose.ui.platform.LocalContext
+
 
 object LoginEmail : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel : AccountViewModel = koinViewModel()
+
+        val viewModel: AccountViewModel = koinViewModel(
+            viewModelStoreOwner = LocalContext.current as ComponentActivity
+        )
+
         LaunchedEffect(Unit) {
             viewModel.resetState()
         }
@@ -33,9 +41,6 @@ object LoginEmail : Screen {
             onPasswordChange = viewModel::updatePassword,
             onLoginClick = {
                 viewModel.login()
-            },
-            onNavigateToDashboard = {
-                navigator.replaceAll(Dashboard)
             }
         )
     }

@@ -9,7 +9,6 @@ data class ProfileResponse(
     val phone: String?,
     val isEmailVerified: Boolean,
     val isPhoneVerified: Boolean,
-    //val sessionInfo: UserAuthSessionData?,
     val warning: String?
 )
 

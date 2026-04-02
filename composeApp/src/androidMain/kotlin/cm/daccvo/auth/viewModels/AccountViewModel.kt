@@ -38,7 +38,7 @@ class AccountViewModel(
                 authUseCase.getUser()
                 uiState.copy(
                     isAuthenticating = false,
-                    authenticationSucceed = true
+                    isLoginSucceed = true
                 )
 
             } else {

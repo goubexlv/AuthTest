@@ -136,8 +136,8 @@ fun CreateAccountScreen(
                 CustomTextField(
                     value = uiState.email,
                     onValueChange = onEmailChange,
-                    label = "Email",
-                    placeholder = "Entrez votre emaill",
+                    label = "Email/telephone",
+                    placeholder = "Entrez votre emaill ou numero de telephone",
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Email,
                         imeAction = ImeAction.Next

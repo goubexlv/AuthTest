@@ -67,7 +67,6 @@ fun LoginScreenEmail(
     onPasswordChange: (String) -> Unit,
     onPhoneLoginClick: () -> Unit = {},
     onLoginClick: () -> Unit ,
-    onNavigateToDashboard: () -> Unit,
     onRegisterClick: () -> Unit = {}
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
@@ -336,12 +335,9 @@ fun LoginScreenEmail(
 
     val context = LocalContext.current
     LaunchedEffect(
-        key1 = uiState.authenticationSucceed,
+        key1 = uiState.isLoginSucceed,
         key2 = uiState.authErrorMessage,
         block = {
-            if (uiState.authenticationSucceed) {
-                onNavigateToDashboard()
-            }
 
             if (uiState.authErrorMessage != null) {
                 //showToast(uiState.authErrorMessage!!)
@@ -359,7 +355,6 @@ fun LoginEmailPreview() {
         onEmailChange = {},
         onPasswordChange = {},
         onLoginClick = {},
-        onNavigateToDashboard = {},
     )
 }
 

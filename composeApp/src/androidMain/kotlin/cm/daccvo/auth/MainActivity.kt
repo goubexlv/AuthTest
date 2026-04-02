@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
         userSettings.onAppStart() // 🔥 important
         setContent {
             MaterialTheme {
-                App(userSettings)
+                //App(userSettings)
             }
 
         }

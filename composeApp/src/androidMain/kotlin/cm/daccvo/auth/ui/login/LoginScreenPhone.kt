@@ -48,7 +48,6 @@ fun LoginScreenPhone(
     onLoginClick: () -> Unit ,
     onBackClick: () -> Unit = {},
     onEmailLoginClick: () -> Unit = {},
-    onNavigateToDashboard: () -> Unit,
     onRegisterClick: () -> Unit = {}
 ) {
     var phoneNumber by remember { mutableStateOf("") }
@@ -378,12 +377,9 @@ fun LoginScreenPhone(
 
     val context = LocalContext.current
     LaunchedEffect(
-        key1 = uiState.authenticationSucceed,
+        key1 = uiState.isLoginSucceed,
         key2 = uiState.authErrorMessage,
         block = {
-            if (uiState.authenticationSucceed) {
-                onNavigateToDashboard()
-            }
 
             if (uiState.authErrorMessage != null) {
                 //showToast(uiState.authErrorMessage!!)
@@ -401,19 +397,19 @@ data class CountryCode(
     val dialCode: String
 ) {
     companion object {
-        val US = CountryCode("United States", "+1", "🇺🇸", "+1")
-        val FR = CountryCode("France", "+33", "🇫🇷", "+33")
-        val GB = CountryCode("United Kingdom", "+44", "🇬🇧", "+44")
-        val DE = CountryCode("Germany", "+49", "🇩🇪", "+49")
+//        val US = CountryCode("United States", "+1", "🇺🇸", "+1")
+//        val FR = CountryCode("France", "+33", "🇫🇷", "+33")
+//        val GB = CountryCode("United Kingdom", "+44", "🇬🇧", "+44")
+//        val DE = CountryCode("Germany", "+49", "🇩🇪", "+49")
         val CM = CountryCode("Cameroon", "+237", "🇨🇲", "+237")
-        val CA = CountryCode("Canada", "+1", "🇨🇦", "+1")
-        val IN = CountryCode("India", "+91", "🇮🇳", "+91")
-        val CN = CountryCode("China", "+86", "🇨🇳", "+86")
-        val JP = CountryCode("Japan", "+81", "🇯🇵", "+81")
-        val BR = CountryCode("Brazil", "+55", "🇧🇷", "+55")
+//        val CA = CountryCode("Canada", "+1", "🇨🇦", "+1")
+//        val IN = CountryCode("India", "+91", "🇮🇳", "+91")
+//        val CN = CountryCode("China", "+86", "🇨🇳", "+86")
+//        val JP = CountryCode("Japan", "+81", "🇯🇵", "+81")
+//        val BR = CountryCode("Brazil", "+55", "🇧🇷", "+55")
 
         fun getAllCountries() = listOf(
-            US, FR, GB, DE, CM, CA, IN, CN, JP, BR
+            CM
         )
     }
 }
@@ -501,6 +497,5 @@ fun LoginPhonePreview() {
         onPhoneChange = {},
         onPasswordChange = {},
         onLoginClick = {},
-        onNavigateToDashboard ={}
     )
 }
