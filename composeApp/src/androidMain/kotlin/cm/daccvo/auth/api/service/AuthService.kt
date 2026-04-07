@@ -125,7 +125,6 @@ class AuthService(private val settingStore : UserSettingsDataStore)  {
             val res = Json.decodeFromString<Error>(responseText)
             Response(success = false, message = res.error)
         }
-
     }
 
     suspend fun confirm(request: Any,model: LoginMethod) : Response {
@@ -167,11 +166,14 @@ class AuthService(private val settingStore : UserSettingsDataStore)  {
 
     }
 
-    suspend fun exchangeToken() : Response? {
-        val token = settingStore.getRefreshToken() ?: return null
-        val response: HttpResponse = client.post("$AUTH_URL${Endpoint.Exchange.path}") {
+    suspend fun exchangeToken(service: String) : Response {
+        val token = settingStore.getAccessToken()
+        val response: HttpResponse = client.get("$AUTH_URL${Endpoint.Exchange.path}") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
+            url {
+                parameters.append("service", service)
+            }
             headers {
                 append(HttpHeaders.Authorization, "Bearer $token")
                 append("X-Client-Type", ClientType.MOBILE.name)
@@ -181,11 +183,9 @@ class AuthService(private val settingStore : UserSettingsDataStore)  {
         return if (response.status == HttpStatusCode.OK) {
             val res = Json.decodeFromString<ExchangeTokenResponse>(responseText)
             Response(success = true, message = res.accessToken)
-        } else if(response.status == HttpStatusCode.InternalServerError) {
+        } else  {
             val res = Json.decodeFromString<Error>(responseText)
             Response(success = false, message = res.error)
-        } else {
-            null
         }
     }
 

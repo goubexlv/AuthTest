@@ -109,5 +109,15 @@ class AuthRepositoryImpl (
         }
     }
 
+    override suspend fun exchangeToken(service: String): Response {
+        return withContext(Dispatchers.IO){
+            try {
+                authService.exchangeToken(service)
+            } catch (e: Exception){
+                Response(false,"Serveur injoignable, reesayer plus tard")
+            }
+        }
+    }
+
 
 }

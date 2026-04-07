@@ -91,12 +91,12 @@ class ExchangeActivity : ComponentActivity() {
         }
     }
 
-    private fun sendSuccessResponse() {
+    private suspend fun sendSuccessResponse() {
         val service = intent.data?.getQueryParameter("service") ?: ""
-        //val tokens = generateTokenForService(service)
+        val tokens = authRepository.exchangeToken(service)
 
         val resultIntent = Intent().apply {
-//            putExtra("accessToken", tokens.accessToken)
+            putExtra("accessToken", tokens.message)
         }
         setResult(RESULT_OK, resultIntent)
         finish()

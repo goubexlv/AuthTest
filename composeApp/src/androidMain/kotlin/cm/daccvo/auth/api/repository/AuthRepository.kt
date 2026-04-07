@@ -19,6 +19,7 @@ interface AuthRepository {
     suspend fun logout() : Response?
 
     suspend fun refreshToken() : Response?
+    suspend fun exchangeToken(service: String) : Response
 
 
 }
