@@ -101,13 +101,7 @@ fun CreateAccountScreen(
                     lineHeight = 38.sp
                 )
 
-                Text(
-                    text = "Rejoignez-nous et commencez votre voyage dès aujourd'hui",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = AppColors.TextSecondary,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
+
             }
 
             // Formulaire

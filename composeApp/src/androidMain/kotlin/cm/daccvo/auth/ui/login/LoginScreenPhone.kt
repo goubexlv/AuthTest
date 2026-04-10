@@ -105,19 +105,13 @@ fun LoginScreenPhone(
                     .padding(top = 32.dp, bottom = 16.dp)
             ) {
                 Text(
-                    text = "Content de te revoir",
+                    text = "Connexion",
                     color = AppColors.White,
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
                     lineHeight = 40.sp
                 )
-                Text(
-                    text = "Saisissez votre numéro de téléphone pour recevoir un code",
-                    color = AppColors.TextSecondary,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
+
             }
 
             // Phone Number Input Section
@@ -132,7 +126,7 @@ fun LoginScreenPhone(
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
                     Text(
-                        text = "Numéro de téléphone",
+                        text = "Par téléphone",
                         color = AppColors.White,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
@@ -216,13 +210,7 @@ fun LoginScreenPhone(
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
-                    Text(
-                        text = "Mot de passe",
-                        color = AppColors.White,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
+
                     OutlinedTextField(
                         value = uiState.password,
                         onValueChange = onPasswordChange,

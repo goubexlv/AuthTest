@@ -37,7 +37,7 @@ import kotlinx.coroutines.delay
 // Couleurs du thème
 object AppColors {
     val Primary = Color(0xFF137FEC)
-    val BackgroundDark = Color(0xFF101922)
+    val BackgroundDark = Color(0xFF06080B)
     val BackgroundLight = Color(0xFFF6F8F6)
     val InputBackground = Color(0xFF192633)
     val InputBorder = Color(0xFF324D67)
@@ -107,19 +107,13 @@ fun LoginScreenEmail(
                     .padding(top = 32.dp, bottom = 16.dp)
             ) {
                 Text(
-                    text = "Content de te revoir",
+                    text = "Connexion",
                     color = AppColors.White,
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
                     lineHeight = 40.sp
                 )
-                Text(
-                    text = "Connectez-vous pour poursuivre votre voyage",
-                    color = AppColors.TextSecondary,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
+
             }
 
             // Form Section
@@ -135,7 +129,7 @@ fun LoginScreenEmail(
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
                     Text(
-                        text = "Email",
+                        text = "Par e-mail",
                         color = AppColors.White,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
@@ -174,13 +168,7 @@ fun LoginScreenEmail(
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
-                    Text(
-                        text = "Mot de passe",
-                        color = AppColors.White,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
+
                     OutlinedTextField(
                         value = uiState.password,
                         onValueChange = onPasswordChange,
