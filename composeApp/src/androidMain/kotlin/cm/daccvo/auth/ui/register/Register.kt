@@ -26,14 +26,21 @@ object Register : Screen {
             onEmailChange = viewModel::updateEmail,
             onPasswordChange = viewModel::updatePassword,
             onConfirmPasswordChange = viewModel::updateConfirmPassword,
-            onLoginClick= {
+            onLoginClick = {
                 navigator.push(LoginEmail)
             },
             onNavigateToVerifieCode = {
                 viewModel.verify()
-                navigator.push(Verify(viewModel.uiState.email,viewModel.uiState.phone,viewModel.uiState.model))
+                navigator.push(
+                    Verify(
+                        viewModel.uiState.email,
+                        viewModel.uiState.phone,
+                        viewModel.uiState.model
+                    )
+                )
             },
-            onModelChange = viewModel::updateModel
+            onModelChange = viewModel::updateModel,
+            onPhoneChange = viewModel::updatePhone
         )
     }
 }

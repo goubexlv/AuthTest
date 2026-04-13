@@ -2,6 +2,7 @@ package cm.daccvo.auth.ui.register
 
 import cm.daccvo.auth.R
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,8 +17,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -44,6 +47,7 @@ import cm.daccvo.auth.composant.LANGUAGES
 import cm.daccvo.auth.composant.LanguageSelector
 import cm.daccvo.auth.composant.LoadingOverlay
 import cm.daccvo.auth.ui.login.AppColors
+import cm.daccvo.auth.ui.login.CountryCode
 import cm.daccvo.auth.uiState.AccountUiState
 import cm.horion.models.domain.LoginMethod
 import kotlinx.coroutines.delay
@@ -58,6 +62,7 @@ fun CreateAccountScreen(
     onTermsClick: () -> Unit = {},
     onPrivacyClick: () -> Unit = {},
     onEmailChange: (String) -> Unit,
+    onPhoneChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onConfirmPasswordChange: (String) -> Unit,
     onModelChange: (LoginMethod) -> Unit,
@@ -66,6 +71,8 @@ fun CreateAccountScreen(
 
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
+    var showCountryPicker by remember { mutableStateOf(false) }
+    var selectedCountry by remember { mutableStateOf(CountryCode.CM) }
     var selectedLang by remember {
         mutableStateOf(LANGUAGES.first())
     }
@@ -148,7 +155,7 @@ fun CreateAccountScreen(
                     value = uiState.email,
                     onValueChange = onEmailChange,
                     label = "Email/telephone",
-                    placeholder = "Entrez votre emaill ou numero de telephone",
+                    placeholder = "Entrez votre emaill",
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Email,
                         imeAction = ImeAction.Next
@@ -157,6 +164,78 @@ fun CreateAccountScreen(
                         onNext = { focusManager.moveFocus(FocusDirection.Down) }
                     )
                 )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        //.height(56.dp)
+                ) {
+                    // Country Code Selector
+                    Surface(
+                        modifier = Modifier
+                            .clickable { showCountryPicker = true }
+                            .height(56.dp),
+                        shape = RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp),
+                        color = Color.White.copy(alpha = 0.05f),
+                        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.05f))
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = selectedCountry.flag,
+                                fontSize = 16.sp,
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                            Text(
+                                text = selectedCountry.code,
+                                color = AppColors.White,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Icon(
+                                imageVector = Icons.Outlined.ExpandMore,
+                                contentDescription = "Select country",
+                                tint = AppColors.TextSecondary,
+                                modifier = Modifier
+                                    .padding(start = 4.dp)
+                                    .size(18.dp)
+                            )
+                        }
+                    }
+
+
+
+                    // Phone Number Input
+                    OutlinedTextField(
+                        value = uiState.phone,
+                        onValueChange = { onPhoneChange(it) },
+                        placeholder = {
+                            Text(
+                                text = "Entrez votre numéro de téléphone",
+                                color = AppColors.TextSecondary
+                            )
+                        },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = AppColors.White,
+                            unfocusedTextColor = AppColors.White,
+                            focusedContainerColor = Color.White.copy(alpha = 0.05f),
+                            unfocusedContainerColor = Color.White.copy(alpha = 0.05f),
+                            focusedBorderColor = AppColors.Primary,
+                            unfocusedBorderColor = AppColors.InputBorder,
+                            cursorColor = AppColors.Primary
+                        ),
+                        shape = RoundedCornerShape(topEnd = 8.dp, bottomEnd = 8.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(56.dp),
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+                    )
+                }
 
                 // Champ Mot de passe
                 PasswordTextField(
@@ -197,7 +276,7 @@ fun CreateAccountScreen(
             }
 
             val isFormValid = remember(uiState) {
-                uiState.email.isNotBlank() &&
+                (uiState.email.isNotBlank() || uiState.phone.isNotBlank()) &&
                         uiState.password.isNotBlank() &&
                         uiState.confirmPassword.isNotBlank() &&
                         uiState.password == uiState.confirmPassword
@@ -309,13 +388,6 @@ private fun CustomTextField(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        Text(
-            text = label,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium,
-            color = AppColors.White,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
 
         OutlinedTextField(
             value = value,
@@ -530,6 +602,7 @@ private fun CreateAccountScreenPreview() {
         onPasswordChange = {},
         onConfirmPasswordChange = {},
         onNavigateToVerifieCode = {},
-        onModelChange = {}
+        onModelChange = {},
+        onPhoneChange = {}
     )
 }
