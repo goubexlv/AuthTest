@@ -48,6 +48,7 @@ import cm.daccvo.auth.composant.LanguageSelector
 import cm.daccvo.auth.composant.LoadingOverlay
 import cm.daccvo.auth.ui.login.AppColors
 import cm.daccvo.auth.ui.login.CountryCode
+import cm.daccvo.auth.ui.login.CountryPickerDialog
 import cm.daccvo.auth.uiState.AccountUiState
 import cm.horion.models.domain.LoginMethod
 import kotlinx.coroutines.delay
@@ -357,6 +358,17 @@ fun CreateAccountScreen(
 
         }
         LoadingOverlay(uiState.isAuthenticating)
+    }
+
+    if (showCountryPicker) {
+        CountryPickerDialog(
+            selectedCountry = selectedCountry,
+            onDismiss = { showCountryPicker = false },
+            onCountrySelected = { country ->
+                selectedCountry = country
+                showCountryPicker = false
+            }
+        )
     }
 
     val context = LocalContext.current
