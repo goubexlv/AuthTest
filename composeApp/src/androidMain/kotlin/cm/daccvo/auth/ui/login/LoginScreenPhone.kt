@@ -1,6 +1,8 @@
 package cm.daccvo.auth.ui.login
 
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,11 +14,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -25,7 +30,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cm.daccvo.auth.composant.LANGUAGES
+import cm.daccvo.auth.composant.LanguageSelector
 import cm.daccvo.auth.uiState.AccountUiState
+import cm.daccvo.auth.R
+import cm.daccvo.auth.utils.Validators
+
 
 // Couleurs du thème (réutilisation)
 //object AppColors {
@@ -50,12 +60,14 @@ fun LoginScreenPhone(
     onEmailLoginClick: () -> Unit = {},
     onRegisterClick: () -> Unit = {}
 ) {
-    var phoneNumber by remember { mutableStateOf("") }
+
     var showCountryPicker by remember { mutableStateOf(false) }
     var selectedCountry by remember { mutableStateOf(CountryCode.CM) }
     var isSendCodePressed by remember { mutableStateOf(false) }
-    var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    var selectedLang by remember {
+        mutableStateOf(LANGUAGES.first())
+    }
 
     Box(
         modifier = Modifier
@@ -72,28 +84,20 @@ fun LoginScreenPhone(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
-                    .padding(bottom = 8.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(
-                    onClick = { },
-                    modifier = Modifier.size(40.dp)
-                ) {
-//                    Icon(
-//                        imageVector = Icons.Outlined.ArrowBackIos,
-//                        contentDescription = "Back",
-//                        tint = AppColors.WhiteAlpha50,
-//                        modifier = Modifier.size(20.dp)
-//                    )
-                }
+                Image(
+                    painter = painterResource(R.drawable.logo),
+                    contentDescription = "Logo",
+                    modifier = Modifier.size(86.dp).alpha(0.8f)
+                )
 
-                Icon(
-                    imageVector = Icons.Outlined.Info,
-                    contentDescription = "Info",
-                    tint = AppColors.WhiteAlpha50,
-                    modifier = Modifier.size(24.dp)
+                LanguageSelector(
+                    languages = LANGUAGES,
+                    selected = selectedLang,
+                    onSelected = { selectedLang = it }
                 )
             }
 
@@ -102,14 +106,17 @@ fun LoginScreenPhone(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
-                    .padding(top = 32.dp, bottom = 16.dp)
+                    .padding(top = 32.dp, bottom = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+
             ) {
                 Text(
                     text = "Connexion",
                     color = AppColors.White,
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
-                    lineHeight = 40.sp
+                    lineHeight = 40.sp,
+                    textAlign = TextAlign.Center
                 )
 
             }
@@ -144,8 +151,8 @@ fun LoginScreenPhone(
                                 .clickable { showCountryPicker = true }
                                 .height(56.dp),
                             shape = RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp),
-                            color = AppColors.InputBackground,
-                            border = androidx.compose.foundation.BorderStroke(1.dp, AppColors.InputBorder)
+                            color = Color.White.copy(alpha = 0.05f),
+                            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.05f))
                         ) {
                             Row(
                                 modifier = Modifier
@@ -175,6 +182,8 @@ fun LoginScreenPhone(
                             }
                         }
 
+
+
                         // Phone Number Input
                         OutlinedTextField(
                             value = uiState.phone,
@@ -188,8 +197,8 @@ fun LoginScreenPhone(
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedTextColor = AppColors.White,
                                 unfocusedTextColor = AppColors.White,
-                                focusedContainerColor = AppColors.InputBackground,
-                                unfocusedContainerColor = AppColors.InputBackground,
+                                focusedContainerColor = Color.White.copy(alpha = 0.05f),
+                                unfocusedContainerColor = Color.White.copy(alpha = 0.05f),
                                 focusedBorderColor = AppColors.Primary,
                                 unfocusedBorderColor = AppColors.InputBorder,
                                 cursorColor = AppColors.Primary
@@ -233,8 +242,8 @@ fun LoginScreenPhone(
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = AppColors.White,
                             unfocusedTextColor = AppColors.White,
-                            focusedContainerColor = AppColors.InputBackground,
-                            unfocusedContainerColor = AppColors.InputBackground,
+                            focusedContainerColor = Color.White.copy(alpha = 0.05f),
+                            unfocusedContainerColor = Color.White.copy(alpha = 0.05f),
                             focusedBorderColor = AppColors.Primary,
                             unfocusedBorderColor = AppColors.InputBorder,
                             cursorColor = AppColors.Primary
@@ -251,38 +260,55 @@ fun LoginScreenPhone(
                 // Forgot Password
                 Text(
                     text = "Mot de passe oublié ?",
-                    color = AppColors.TextSecondary,
+                    color = AppColors.Primary,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                         .padding(vertical = 8.dp)
-                        .clickable { /* Handle forgot password */ },
-                    textAlign = TextAlign.End
+                        .clickable { onLoginClick() },
+                    textAlign = TextAlign.Center
                 )
 
             }
 
+            val isEnabled = remember(uiState) {
+                (uiState.phone.isNotBlank() && uiState.password.isNotBlank())
+                        && (Validators.isValidPhone(uiState.phone) || Validators.isValidPassword(
+                    uiState.password
+                ))
+            }
+
             // Send Verification Code Button
+
+
             Button(
                 onClick = {
                     isSendCodePressed = true
-                    onLoginClick
+                    onLoginClick()
                 },
+                enabled = isEnabled,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = AppColors.Primary,
-                    contentColor = AppColors.White
+                    containerColor = if (isEnabled)
+                        AppColors.Primary
+                    else
+                        AppColors.Disabled, // 🔥 gris / désactivé
+
+                    contentColor = if (isEnabled)
+                        AppColors.White
+                    else
+                        AppColors.DisabledContent
                 ),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
-                    .padding(top = 32.dp, bottom = 8.dp)
+                    .padding(top = 24.dp, bottom = 8.dp)
                     .height(56.dp)
-                    .scale(if (isSendCodePressed) 0.98f else 1f),
+                .scale(if (isSendCodePressed) 0.98f else 1f),
                 elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 8.dp,
+                    defaultElevation = if (isEnabled) 8.dp else 0.dp,
                     pressedElevation = 4.dp
                 )
             ) {
@@ -311,13 +337,7 @@ fun LoginScreenPhone(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Outlined.Mail,
-                    contentDescription = "Email",
-                    tint = AppColors.Primary,
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
+
                 Text(
                     text = "Connectez-vous avec e-mail",
                     color = AppColors.Primary,
@@ -410,7 +430,7 @@ fun CountryPickerDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = AppColors.InputBackground,
+        containerColor = Color.White.copy(alpha = 0.05f),
         title = {
             Text(
                 text = "Select Country",

@@ -39,12 +39,12 @@ fun App(onLoginSuccess: () -> Unit) {
     }
 
     // Adapter les couleurs selon le thème
-    SideEffect {
-        systemUiController.setStatusBarColor(
-            color = statusBarColor,
-            darkIcons = !isDarkTheme
-        )
-    }
+//    SideEffect {
+//        systemUiController.setStatusBarColor(
+//            color = statusBarColor,
+//            darkIcons = !isDarkTheme
+//        )
+//    }
 
     Surface(
         modifier = Modifier
@@ -59,4 +59,3 @@ fun App(onLoginSuccess: () -> Unit) {
     }
 }
 
-val LocalStatusBarColor = compositionLocalOf<Color> { Color.Unspecified }

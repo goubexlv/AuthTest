@@ -1,7 +1,8 @@
 package cm.daccvo.auth.ui.register
 
-import android.R
+import cm.daccvo.auth.R
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -19,11 +20,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -37,6 +40,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cm.daccvo.auth.composant.LANGUAGES
+import cm.daccvo.auth.composant.LanguageSelector
 import cm.daccvo.auth.composant.LoadingOverlay
 import cm.daccvo.auth.ui.login.AppColors
 import cm.daccvo.auth.uiState.AccountUiState
@@ -61,6 +66,9 @@ fun CreateAccountScreen(
 
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
+    var selectedLang by remember {
+        mutableStateOf(LANGUAGES.first())
+    }
 
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
@@ -86,21 +94,44 @@ fun CreateAccountScreen(
                 .verticalScroll(scrollState)
         ) {
 
-            // En-tête
+            // Top Bar with Back and Info buttons
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(cm.daccvo.auth.R.drawable.logo),
+                    contentDescription = "Logo",
+                    modifier = Modifier.size(86.dp).alpha(0.8f)
+                )
+
+                LanguageSelector(
+                    languages = LANGUAGES,
+                    selected = selectedLang,
+                    onSelected = { selectedLang = it }
+                )
+            }
+
+            // Header
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 32.dp, bottom = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+
             ) {
                 Text(
                     text = "Créer un compte",
+                    color = AppColors.White,
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
-                    color = AppColors.White,
-                    letterSpacing = (-0.5).sp,
-                    lineHeight = 38.sp
+                    lineHeight = 40.sp,
+                    textAlign = TextAlign.Center
                 )
-
 
             }
 
@@ -111,20 +142,6 @@ fun CreateAccountScreen(
                     .padding(top = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                // Champ Nom complet
-//                CustomTextField(
-//                    value = fullName,
-//                    onValueChange = { fullName = it },
-//                    label = "Full Name",
-//                    placeholder = "Enter your full name",
-//                    keyboardOptions = KeyboardOptions(
-//                        keyboardType = KeyboardType.Text,
-//                        imeAction = ImeAction.Next
-//                    ),
-//                    keyboardActions = KeyboardActions(
-//                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
-//                    )
-//                )
 
                 // Champ Email
                 CustomTextField(
@@ -315,8 +332,8 @@ private fun CustomTextField(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedTextColor = AppColors.White,
                 unfocusedTextColor = AppColors.White,
-                focusedContainerColor = AppColors.InputBackground,
-                unfocusedContainerColor = AppColors.InputBackground,
+                focusedContainerColor = Color.White.copy(alpha = 0.05f),
+                unfocusedContainerColor = Color.White.copy(alpha = 0.05f),
                 focusedBorderColor = AppColors.Primary,
                 unfocusedBorderColor = AppColors.InputBorder,
                 cursorColor = AppColors.Primary
@@ -346,13 +363,6 @@ private fun PasswordTextField(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        Text(
-            text = label,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium,
-            color = AppColors.White,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
 
         OutlinedTextField(
             value = value,
@@ -369,8 +379,8 @@ private fun PasswordTextField(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedTextColor = AppColors.White,
                 unfocusedTextColor = AppColors.White,
-                focusedContainerColor = AppColors.InputBackground,
-                unfocusedContainerColor = AppColors.InputBackground,
+                focusedContainerColor = Color.White.copy(alpha = 0.05f),
+                unfocusedContainerColor = Color.White.copy(alpha = 0.05f),
                 focusedBorderColor = AppColors.Primary,
                 unfocusedBorderColor = AppColors.InputBorder,
                 cursorColor = AppColors.Primary

@@ -368,7 +368,7 @@ fun CodeDigitField(
         modifier = Modifier
             .size(48.dp)
             .background(
-                color = AppColors.InputBackground,
+                color = Color.White.copy(alpha = 0.05f),
                 shape = RoundedCornerShape(12.dp)
             )
             .border(
