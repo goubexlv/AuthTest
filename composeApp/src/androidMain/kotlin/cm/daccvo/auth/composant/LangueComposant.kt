@@ -130,7 +130,7 @@ fun LanguageSelector(
                             Spacer(Modifier.width(8.dp))
 
                             Text(
-                                lang.label,
+                                lang.code,
                                 color = AppColors.White
                             )
                         }
