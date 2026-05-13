@@ -42,7 +42,6 @@ class AuthRepositoryImpl (
                 }
                 authService.login(request,model = model)
             }  catch (e : Exception) {
-                Log.d("CLIENT","${e.message}")
                 Response(false,"Serveur injoignable, reesayer plus tard")
             }
         }
